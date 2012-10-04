@@ -1,2 +1,2 @@
-event
+event is an informative entity. 
 =====
