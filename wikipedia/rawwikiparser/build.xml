@@ -1,0 +1,54 @@
+<project name="parseXml" basedir="." default="main">
+
+    <property name="src.dir"     value="src"/>
+
+    <property name="build.dir"   value="build"/>
+    <property name="classes.dir" value="${build.dir}/${ant.project.name}/classes"/>
+    <property name="jar.dir"     value="${build.dir}/${ant.project.name}/jar"/>
+
+    <property name="main-class"  value="parseXml"/>
+
+
+
+    <target name="clean">
+	<delete dir="${build.dir}/${ant.project.name}"/>
+    </target>
+
+    <path id="classpath">
+	<fileset dir="/grid/0/gs/hadoop/current/" includes="hadoop-core.jar" />
+	<fileset dir="/grid/0/gs/hadoop/current/lib/" includes="commons-cli-1.2.jar" />
+    </path>
+
+    <target name="compile">
+	<mkdir dir="${classes.dir}"/>
+	<javac srcdir="${src.dir}" destdir="${classes.dir}" classpathref="classpath"/>
+    </target>
+
+    <target name="jar" depends="compile">
+	<mkdir dir="${jar.dir}"/>
+	<jar destfile="${jar.dir}/${ant.project.name}.jar" basedir="${classes.dir}">
+	    <manifest>
+		<attribute name="Main-Class" value="${main-class}"/>
+	    </manifest>
+	</jar>
+    </target>
+
+    <target name="run" depends="jar">
+	<java fork="true" classname="${main-class}">
+	    <classpath>
+		<path refid="classpath"/>
+		<path location="${jar.dir}/${ant.project.name}.jar"/>
+	    </classpath>
+	</java>
+    </target>
+
+</project>
+
+<!--
+<exec executable="bin/hadoop" dir="/opt/hadoop-0.18.1">
+    <arg value="jar"/>
+    <arg value="${basedir}/target/log-analyzer.jar"/>
+    <arg value="${basedir}/src/main/resources/access_logs"/>
+    <arg value="${basedir}/src/main/resources/access_log_outputs"/>
+</exec>
+-->
